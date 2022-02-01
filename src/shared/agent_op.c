@@ -365,11 +365,9 @@ int set_agent_multigroup(char * group) {
     os_sha256 multi_group_hash;
     char multigroup_path[PATH_MAX + 1] = {0};
     OS_SHA256_String(group,multi_group_hash);
-    char _hash[9] = {0};
 
-    strncpy(_hash,multi_group_hash,9);
-    _hash[8] = '\0';
-    snprintf(multigroup_path, PATH_MAX, "%s/%s" , MULTIGROUPS_DIR, _hash);
+    snprintf(multigroup_path, sizeof(multigroup_path), "%s/%.8s" , MULTIGROUPS_DIR, multi_group_hash);
+
     DIR *dp;
     dp = opendir(multigroup_path);
 
@@ -571,15 +569,9 @@ void w_remove_multigroup(const char *group) {
             /* Remove the DIR */
             os_sha256 multi_group_hash;
             OS_SHA256_String(group,multi_group_hash);
-            char _hash[9] = {0};
 
             /* We only want the 8 first bytes of the hash */
-            multi_group_hash[8] = '\0';
-
-            strncpy(_hash,multi_group_hash, 9);
-            _hash[8] = '\0';
-
-            sprintf(path, "%s/%s", MULTIGROUPS_DIR, _hash);
+            snprintf(path, sizeof(path), "%s/%.8s", MULTIGROUPS_DIR,  multi_group_hash);
 
             if (rmdir_ex(path) != 0) {
                 mdebug1("At w_remove_multigroup(): Directory '%s' couldn't be deleted. ('%s')",path, strerror(errno));

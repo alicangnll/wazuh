@@ -3,7 +3,12 @@
 # This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2
 
 from datetime import datetime
+<<<<<<< HEAD
 from wazuh.core.common import LOGTEST_SOCKET, DECIMALS_DATE_FORMAT, origin_module
+=======
+from wazuh.core.common import LOGTEST_SOCKET, decimals_date_format, origin_module
+from wazuh.core.utils import get_utc_strptime
+>>>>>>> Changes to utcnow
 from wazuh.core.wazuh_socket import WazuhSocketJSON, create_wazuh_socket_message
 
 
@@ -30,7 +35,7 @@ def send_logtest_msg(command: str = None, parameters: dict = None):
     response = logtest_socket.receive(raw=True)
     logtest_socket.close()
     try:
-        response['data']['output']['timestamp'] = datetime.strptime(
+        response['data']['output']['timestamp'] = get_utc_strptime(
             response['data']['output']['timestamp'], "%Y-%m-%dT%H:%M:%S.%f+0000").strftime(DECIMALS_DATE_FORMAT)
     except KeyError:
         pass

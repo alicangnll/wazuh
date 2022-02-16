@@ -3,7 +3,7 @@
 # This program is free software; you can redistribute it and/or modify it under the terms of GP
 
 import copy
-from datetime import datetime
+from functools import lru_cache
 from typing import Union
 
 from wazuh.core import common

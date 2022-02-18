@@ -11,8 +11,6 @@
 
 #include <string>
 
-using namespace std;
-
 namespace builder::internals::builders
 {
 
@@ -57,7 +55,7 @@ types::Lifter opBuilderHelperRegexMatch(const types::DocumentValue & def)
     return [=](types::Observable o)
     {
         // Append rxcpp operations
-        return o.filter([=](types::Event e) { return (RE2::FullMatch(e.get("/" + field)->GetString(), regexp)); });
+        return o.filter([=](types::Event e) { return (RE2::PartialMatch(e.get("/" + field)->GetString(), regexp)); });
     };
 }
 

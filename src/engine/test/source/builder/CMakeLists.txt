@@ -149,6 +149,7 @@ add_executable(opBuilderHelperExistsTest
 gtest_discover_tests(opBuilderHelperExistsTest)
 
 add_executable(opBuilderHelperIntEqual_test
+  ${ENGINE_SOURCE_DIR}/shared/stringUtils.cpp
   ${BUILDER_BUILDERS_TEST_SOURCE_DIR}/opBuilderHelperIntEqual_test.cpp
   ${BUILDER_BUILDERS_ENGINE_SOURCE_DIR}/OpBuilderHelperFilter.cpp)
 gtest_discover_tests(opBuilderHelperIntEqual_test)

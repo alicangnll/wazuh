@@ -11,6 +11,7 @@
 #define _OP_BUILDER_HELPER_FILTER_H
 
 #include "builderTypes.hpp"
+#include "stringUtils.hpp"
 
 namespace builder::internals::builders
 {

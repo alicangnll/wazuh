@@ -15,9 +15,12 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <mutex>
 
 namespace builder::internals::outputs
 {
+
+std::mutex lock;
 
 /**
  * @brief implements a subscriber which will save all received events
@@ -63,7 +66,9 @@ public:
      */
     void write(const json::Document & e)
     {
+        lock.lock();
         this->m_os << e.str() << std::endl;
+        lock.unlock();
     }
 };
 

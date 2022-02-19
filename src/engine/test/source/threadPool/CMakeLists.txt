@@ -19,8 +19,22 @@ CPMAddPackage(
   VERSION 4.1.1
 )
 
+# google logging
+CPMAddPackage(
+  NAME glog
+  GITHUB_REPOSITORY google/glog
+  GIT_TAG v0.5.0
+  VERSION 0.5.0
+  OPTIONS
+      "WITH_GTEST OFF"
+      "BUILD_SHARED_LIBS OFF"
+      "WITH_GFLAGS OFF"
+      "WITH_UNWIND OFF"
+)
+
 link_libraries(
   gtest_main
+  "glog::glog"
 )
 
 include_directories(

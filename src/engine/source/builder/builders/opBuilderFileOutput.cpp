@@ -54,7 +54,9 @@ types::Lifter opBuilderFileOutput(const types::DocumentValue & def)
         auto filePtr = make_shared<outputs::FileOutput>(path);
         input.subscribe([=](auto v) { filePtr->write(v); },
                         [](std::exception_ptr e) { LOG(ERROR) << rxcpp::util::what(e).c_str() << endl; },
-                        [=]() { // filePtr->close();
+                        [=]() { 
+                            LOG(INFO) << "Fileoutput on complete called" << endl;
+                            // filePtr->close();
                         });
         return input;
     };

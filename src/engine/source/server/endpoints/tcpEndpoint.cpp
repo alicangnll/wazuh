@@ -21,8 +21,8 @@ BaseEndpoint::ConnectionObs TCPEndpoint::connectionHandler(const uvw::ListenEven
     auto client = srv.loop().resource<uvw::TCPHandle>();
     auto timer = client->loop().resource<uvw::TimerHandle>();
 
-    auto obs = rxcpp::observable<>::create<BaseEndpoint::EventObs>(
-        [client, timer, &srv](rxcpp::subscriber<BaseEndpoint::EventObs> s)
+    auto obs = rxcpp::observable<>::create<BaseEndpoint::Event>(
+        [client, timer, &srv](rxcpp::subscriber<BaseEndpoint::Event> s)
         {
             auto ph = std::make_shared<ProtocolHandler>();
 
@@ -52,8 +52,12 @@ BaseEndpoint::ConnectionObs TCPEndpoint::connectionHandler(const uvw::ListenEven
                     timer->again();
                     if (!ph->process(event.data.get(), event.length, s))
                     {
+                        LOG(ERROR) << "There was an error processing data in protocolhandler" << std::endl;
                         timer->close();
                         client.close();
+                        auto e =
+                        std::runtime_error("Connection error from " + client.peer().ip + "  in protocol handler");
+                    s.on_error(std::make_exception_ptr(e));
                     }
                 });
 
@@ -68,7 +72,7 @@ BaseEndpoint::ConnectionObs TCPEndpoint::connectionHandler(const uvw::ListenEven
 
             LOG(INFO) << "Accepting client!" << std::endl;
             // TODO: configure timeout for a tcp connection
-            timer->start(uvw::TimerHandle::Time{5000}, uvw::TimerHandle::Time{5000});
+            timer->start(uvw::TimerHandle::Time{30000}, uvw::TimerHandle::Time{30000});
             srv.accept(*client);
             client->read();
         });
@@ -88,6 +92,10 @@ TCPEndpoint::TCPEndpoint(const std::string & config) : BaseEndpoint{config}
     this->m_out = rxcpp::observable<>::create<BaseEndpoint::ConnectionObs>(
         [this, config](rxcpp::subscriber<BaseEndpoint::ConnectionObs> s)
         {
+            // keep alive the graph, with minimun resources
+            // s.on_next(rxcpp::observable<>::create<BaseEndpoint::Event>([](auto s){
+            //     LOG(INFO) << " nop keep alive fake connection" << std::endl;
+            // }));
             this->m_server->on<uvw::ListenEvent>(
                 [s, this](const uvw::ListenEvent & event, uvw::TCPHandle & client)
                 {

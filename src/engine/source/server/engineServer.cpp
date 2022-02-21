@@ -13,7 +13,7 @@
 #include <memory>
 #include <rxcpp/rx.hpp>
 #include <vector>
-
+#include "glog/logging.h"
 #include "endpoints/baseEndpoint.hpp"
 #include "endpoints/endpointFactory.hpp"
 #include "json.hpp"
@@ -37,17 +37,32 @@ void EngineServer::configure(const vector<string> & config)
         tmpObs.push_back(this->m_endpoints[endpointConf]->output());
     }
 
-    auto obs = rxcpp::observable<>::iterate(tmpObs)
+    auto obs = rxcpp::observable<>::iterate(tmpObs).finally([](){
+            LOG(INFO) << "tmpObs main loop finalized! why!?" << std::endl;
+        })
         // TODO: Handle endpoint server errors
         // From -> EndpointObs observable->observable->observable->event
         // Emits -> ConnectionObs observable->observable->event
-        .flat_map([](BaseEndpoint::EndpointObs o) { return o; })
+        .flat_map([](BaseEndpoint::EndpointObs o)  { return o; }).finally([](){
+            LOG(INFO) << "EndpointObs main loop finalized! why!?" << std::endl;
+        })
         // TODO: Handle endpoint connection errors
         // From -> ConnectionObs observable->observable->event
         // Emits -> EventObs observable->event
-        .flat_map([](BaseEndpoint::ConnectionObs o) { return o; });
+        .flat_map([](BaseEndpoint::ConnectionObs o){ return o;}).finally([](){
+            LOG(INFO) << "ConnectionObs main loop finalized! why!?" << std::endl;
+        });
 
-    this->m_output = obs;
+   this->m_output = obs.on_error_resume_next([obs](std::exception_ptr ep){
+        try {
+            if (ep) {
+                std::rethrow_exception(ep);
+            }
+        } catch(const std::exception& e) {
+            LOG(ERROR) << "Server error: " << e.what();
+        }
+        return obs;
+    });
 }
 
 EngineServer::EngineServer(const vector<string> & config)

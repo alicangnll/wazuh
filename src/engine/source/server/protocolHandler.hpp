@@ -18,6 +18,8 @@
 namespace engineserver
 {
 
+std::shared_ptr<json::Document> parse(const std::string & event);
+
 /**
  * @brief A handler which knows how to parse messages from the network
  * data chunks and send them to a subscriber.
@@ -46,7 +48,7 @@ private:
      *
      * @param s a subscriber of this connection.
      */
-    void send(const rxcpp::subscriber<rxcpp::observable<std::string>> s);
+    void send(const rxcpp::subscriber<std::string> s);
 
 public:
     /**
@@ -54,7 +56,7 @@ public:
      *
      * @return json::Document
      */
-    json::Document parse(const std::string & event) const;
+    // json::Document parse(const std::string & event) const;
     /**
      * @brief process the chunk of data and send messages to dst when. Return
      * true if all data was processed correctly, or false in case of error.
@@ -66,7 +68,7 @@ public:
      * @return true no errors
      * @return false errors in processing
      */
-    bool process(char * data, std::size_t length, const rxcpp::subscriber<rxcpp::observable<std::string>> dst);
+    bool process(char * data, std::size_t length, const rxcpp::subscriber<std::string> dst);
 };
 
 } // namespace engineserver

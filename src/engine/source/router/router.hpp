@@ -18,9 +18,13 @@ namespace router
  */
 struct Route
 {
+    using Event = std::shared_ptr<json::Document>;
+    using Obs_t = rxcpp::observable<Event>;
+    using Op_t = std::function<Obs_t(Obs_t)>;
+
     std::string m_name;
     std::string m_to;
-    std::function<bool(json::Document)> m_from;
+    std::function<bool(Event)> m_from;
     rxcpp::composite_subscription m_subscription;
 
     Route() = default;
@@ -36,7 +40,7 @@ struct Route
      * @param subscription Subscription to handle status
      */
     Route(const std::string & name, const std::string & environment,
-          std::function<bool(json::Document)> filter_function, rxcpp::composite_subscription subscription) noexcept
+          std::function<bool(Event)> filter_function, rxcpp::composite_subscription subscription) noexcept
         : m_name(name), m_to(environment), m_from(filter_function), m_subscription(subscription)
     {
     }
@@ -82,11 +86,12 @@ struct Route
  */
 struct Environment
 {
-    using Obs_t = rxcpp::observable<json::Document>;
+    using Event = std::shared_ptr<json::Document>;
+    using Obs_t = rxcpp::observable<Event>;
     using Op_t = std::function<Obs_t(Obs_t)>;
 
     std::string m_name;
-    rxcpp::subjects::subject<json::Document> m_subject;
+    rxcpp::subjects::subject<Event> m_subject;
     Op_t m_build;
 
     Environment() = default;
@@ -122,7 +127,8 @@ struct Environment
  */
 template <class Builder> class Router
 {
-    using Obs_t = rxcpp::observable<json::Document>;
+    using Event = std::shared_ptr<json::Document>;
+    using Obs_t = rxcpp::observable<Event>;
     using Op_t = std::function<Obs_t(Obs_t)>;
 
     // Check Builder class is as expected
@@ -133,7 +139,7 @@ template <class Builder> class Router
 private:
     std::map<std::string, Environment> m_environments;
     std::map<std::string, Route> m_routes;
-    rxcpp::observable<json::Document> m_observable;
+    rxcpp::observable<std::shared_ptr<json::Document>> m_observable;
     Builder m_builder;
 
 public:
@@ -143,7 +149,7 @@ public:
      * @param serverOutput Observable that emits items received by server
      * @param builder Injected Builder object
      */
-    Router(const rxcpp::observable<json::Document> & serverOutput, const Builder & builder) noexcept
+    Router(const rxcpp::observable<std::shared_ptr<json::Document>> & serverOutput, const Builder & builder) noexcept
         : m_observable{serverOutput}, m_builder{builder}
     {
     }
@@ -155,7 +161,7 @@ public:
      * @param filterFunction Filter function to select forwarded envents
      * @param environment Where events are forwarded
      */
-    void add(const std::string & route, std::function<bool(json::Document)> filterFunction,
+    void add(const std::string & route, std::function<bool(Event)> filterFunction,
              const std::string & environment)
     {
         // Assert route with same name not exists

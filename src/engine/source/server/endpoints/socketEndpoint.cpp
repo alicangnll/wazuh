@@ -18,8 +18,8 @@ BaseEndpoint::ConnectionObs SocketEndpoint::connection(const uvw::ListenEvent & 
     auto client = srv.loop().resource<uvw::PipeHandle>();
     auto timer = client->loop().resource<uvw::TimerHandle>();
 
-    auto obs = rxcpp::observable<>::create<BaseEndpoint::EventObs>(
-        [client, timer, &srv](rxcpp::subscriber<BaseEndpoint::EventObs> s)
+    auto obs = rxcpp::observable<>::create<BaseEndpoint::Event>(
+        [client, timer, &srv](rxcpp::subscriber<BaseEndpoint::Event> s)
         {
             auto ph = std::make_shared<ProtocolHandler>();
 

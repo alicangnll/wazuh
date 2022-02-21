@@ -20,7 +20,7 @@
 namespace builder::internals::outputs
 {
 
-std::mutex lock;
+
 
 /**
  * @brief implements a subscriber which will save all received events
@@ -31,6 +31,7 @@ std::mutex lock;
 class FileOutput
 {
 protected:
+    char m_buf[1 << 20];
     std::ofstream m_os;
 
 public:
@@ -39,12 +40,10 @@ public:
      *
      * @param path file to store the events received
      */
-    explicit FileOutput(const std::string & path) : m_os{path, std::ios::out | std::ios::app | std::ios::binary}
+    explicit FileOutput(const std::string & path)
     {
-        if (!this->m_os)
-        {
-            throw std::invalid_argument("File output cannot open file " + path);
-        }
+        m_os.rdbuf()->pubsetbuf(m_buf, 1 << 20);
+        m_os.open(path, std::ios::out | std::ios::app | std::ios::binary);
     }
 
     /**
@@ -64,11 +63,9 @@ public:
      *
      * @param e
      */
-    void write(const json::Document & e)
+    void write(const std::shared_ptr<json::Document> & e)
     {
-        lock.lock();
-        this->m_os << e.str() << std::endl;
-        lock.unlock();
+        this->m_os << e->str() << std::endl;
     }
 };
 

@@ -25,6 +25,7 @@ class CliParser
 private:
     std::string m_endpoint_config;
     std::string m_storage_path;
+    int m_threads;
 
 public:
     /**
@@ -56,6 +57,8 @@ public:
      * @return std::string m_storage_path
      */
     std::string getStoragePath();
+
+    int getThreads();
 };
 
 } // namespace cliparser

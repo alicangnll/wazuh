@@ -27,11 +27,14 @@ int main(int argc, char * argv[])
     google::InitGoogleLogging(argv[0]);
     vector<string> serverArgs;
     string storagePath;
+    int nthreads;
+
     try
     {
         cliparser::CliParser cliInput(argc, argv);
         serverArgs.push_back(cliInput.getEndpointConfig());
         storagePath = cliInput.getStoragePath();
+        nthreads = cliInput.getThreads();
     }
     catch (const std::exception & e)
     {
@@ -46,7 +49,6 @@ int main(int argc, char * argv[])
     }
     catch (const exception & e)
     {
-        // TODO: implement log with GLOG
         LOG(ERROR) << "Engine error, got exception while configuring server: " << e.what() << endl;
         // TODO: handle if errors on close can happen
         // server.close();
@@ -77,20 +79,19 @@ int main(int argc, char * argv[])
         return 1;
     }
     builder::Builder<catalog::Catalog> _builder(_catalog);
-    engineserver::ProtocolHandler p;
 
     //Handle ThreadPool
-    auto sc = rxcpp::schedulers::make_scheduler<threadpool::ThreadPool>(3);
-    auto scheduledTask =
-        server.output().flat_map([&sc, p](engineserver::endpoints::BaseEndpoint::EventObs o)
-                                 { return o.observe_on(rxcpp::identity_same_worker(sc.create_worker())).map([=](string s){
-                                     return p.parse(s);
-                                 }); });
-
-    // auto sc = rxcpp::schedulers::make_scheduler<threadpool::ThreadPool>(2);
-    // auto scheduledTask =
-    //     server.output().flat_map([&sc](engineserver::endpoints::BaseEndpoint::EventObs o)
-    //                              { return o; });
+    auto sc = rxcpp::schedulers::make_scheduler<threadpool::ThreadPool>(nthreads);
+    static rxcpp::observe_on_one_worker r(sc);
+    rxcpp::observable<std::shared_ptr<json::Document>>  scheduledTask =
+        server.output()
+        .map([](std::string s){ return rxcpp::observable<>::just(s); })
+        .flat_map([](auto o){
+            return o.observe_on(r).map([](std::string s) -> std::shared_ptr<json::Document> {
+                        return engineserver::parse(s);
+                    });
+       });
+            
 
     // Build router
     // TODO: Integrate filter creation with builder and default route with catalog

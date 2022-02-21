@@ -25,7 +25,7 @@ types::Lifter opBuilderHelperExists(const types::DocumentValue & def)
     return [=](types::Observable o)
     {
         // Append rxcpp operation
-        return o.filter([=](types::Event e) { return e.exists("/" + field); });
+        return o.filter([=](types::Event e) { return e->exists("/" + field); });
     };
 }
 
@@ -38,7 +38,7 @@ types::Lifter opBuilderHelperNotExists(const types::DocumentValue & def)
     return [=](types::Observable o)
     {
         // Append rxcpp operation
-        return o.filter([=](types::Event e) { return !e.exists("/" + field); });
+        return o.filter([=](types::Event e) { return !e->exists("/" + field); });
     };
 }
 

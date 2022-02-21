@@ -31,7 +31,7 @@ TEST(SchedulerTest, ThreadPoolSize)
     auto sc = rxcpp::schedulers::make_scheduler<threadpool::ThreadPool>(nth);
 
     serv_t server = rxcpp::observable<>::create<conn_t>([](rxcpp::subscriber<conn_t> s ){
-        for(int i=0; i < 3; i++) {
+        for(int i=0; i < 4; i++) {
             // LOG(INFO) << "NEXT " << std::to_string(i) << " th " << std::this_thread::get_id();
             conn_t a = rxcpp::observable<>::range(1,3);
             s.on_next(a);
@@ -53,7 +53,7 @@ TEST(SchedulerTest, ThreadPoolSize)
                 mtset.lock();
                 tset.insert(std::this_thread::get_id());
                 mtset.unlock();
-                // LOG(INFO) << "SUB " << std::to_string(i) << " " << s << " th " << std::this_thread::get_id();
+                LOG(INFO) << "SUB " << std::to_string(i) << " " << s << " th " << std::this_thread::get_id();
             },
             [&, i](){
                 std::lock_guard<std::mutex> lk(m);
@@ -97,11 +97,18 @@ TEST(SchedulerTest, ThreadPoolRoundRobin)
     });
     // .observe_on(rxcpp::identity_same_worker(sc.create_worker()))
     auto values = server.flat_map([&](conn_t c){
+
+        // If we observe_on here we create a worker for the threadpool for each
+        // connection. Each worker will be executed on a thread from the pool 
+        // in a round-robin way.
+        //
+        // The map here acts as the protocol handler parse. 
         return c.observe_on(rxcpp::identity_same_worker(sc.create_worker())
         ).map([](int i) -> std::string { return std::to_string(i); }
         ).tap([](auto s){ 
             // LOG(INFO)  << "TAP     th " <<  std::this_thread::get_id();
         });
+
     });
     
     for(int i=0; i < nsubs; i++) {

@@ -30,8 +30,7 @@ class BaseEndpoint
 {
 public:
     using Event = std::string;
-    using EventObs = rxcpp::observable<Event>;
-    using ConnectionObs = rxcpp::observable<EventObs>;
+    using ConnectionObs = rxcpp::observable<Event>;
     using EndpointObs = rxcpp::observable<ConnectionObs>;
 
 protected:

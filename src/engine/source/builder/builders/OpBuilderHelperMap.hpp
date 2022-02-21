@@ -19,8 +19,8 @@ namespace builder::internals::builders
 {
 
 /**
- * @brief Builds helper exists operation.
- * Checks that a field is present in the event.
+ * @brief Builds regex extract operation.
+ * Maps into an auxiliary field the part of the field value that matches a regexp
  *
  * @param def Definition of the operation to be built
  * @return types::Lifter

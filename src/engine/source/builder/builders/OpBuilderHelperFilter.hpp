@@ -10,8 +10,8 @@
 #ifndef _OP_BUILDER_HELPER_FILTER_H
 #define _OP_BUILDER_HELPER_FILTER_H
 
-#include "stringUtils.hpp"
 #include "builderTypes.hpp"
+#include "stringUtils.hpp"
 
 #include <re2/re2.h>
 

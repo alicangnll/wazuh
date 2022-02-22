@@ -319,13 +319,12 @@ class Agent:
     """Wazuh Agent object.
     """
     fields = {'id': 'id', 'name': 'name', 'ip': 'coalesce(ip,register_ip)', 'status': 'connection_status',
-              'os.name': 'os_name', 'os.version': 'os_version', 'os.platform': 'os_platform',
-              'version': 'version', 'manager': 'manager_host', 'dateAdd': 'date_add',
-              'group': '`group`', 'mergedSum': 'merged_sum', 'configSum': 'config_sum',
-              'os.codename': 'os_codename', 'os.major': 'os_major', 'os.minor': 'os_minor',
-              'os.uname': 'os_uname', 'os.arch': 'os_arch', 'os.build': 'os_build',
-              'node_name': 'node_name', 'lastKeepAlive': 'last_keepalive', 'internal_key': 'internal_key',
-              'registerIP': 'register_ip', 'disconnection_time': 'disconnection_time'}
+              'group_config_status': 'group_config_status', 'os.name': 'os_name', 'os.version': 'os_version',
+              'os.platform': 'os_platform', 'version': 'version', 'manager': 'manager_host', 'dateAdd': 'date_add',
+              'group': '`group`', 'mergedSum': 'merged_sum', 'configSum': 'config_sum', 'os.codename': 'os_codename',
+              'os.major': 'os_major', 'os.minor': 'os_minor', 'os.uname': 'os_uname', 'os.arch': 'os_arch',
+              'os.build': 'os_build', 'node_name': 'node_name', 'lastKeepAlive': 'last_keepalive',
+              'internal_key': 'internal_key', 'registerIP': 'register_ip', 'disconnection_time': 'disconnection_time'}
 
     def __init__(self, id=None, name=None, ip=None, key=None, force=None):
         """Initialize an agent.

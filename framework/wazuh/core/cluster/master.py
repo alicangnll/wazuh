@@ -629,7 +629,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
         sync_object = c_common.SyncWazuhdb(manager=self, logger=logger, cmd=b'syn_g_m_w',
                                            data_retriever=wdb_conn.run_wdb_command,
                                            set_data_command='global set-agent-groups',
-                                           set_payload={'mode': 'overwrite', 'sync_status': 'synced'})
+                                           set_payload={'mode': 'override', 'sync_status': 'synced'})
 
         while True:
             info = self.server.get_agent_groups_info(self.name)

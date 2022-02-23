@@ -59,7 +59,18 @@ types::Lifter opBuilderHelperRegexMatch(const types::DocumentValue & def)
         // Append rxcpp operations
         return o.filter(
             [=](types::Event e)
-            { return (RE2::PartialMatch(e.get("/" + field)->GetString(), *regex_ptr)); });
+            {
+                auto field_str = e.get("/" + field)->GetString();
+                if (field_str)
+                {
+                    return (RE2::PartialMatch(field_str, *regex_ptr));
+                }
+                /*                 else
+                                {
+                                    return false;
+                                } */
+                return false;
+            });
     };
 }
 
@@ -81,8 +92,14 @@ types::Lifter opBuilderHelperRegexNotMatch(const types::DocumentValue & def)
     {
         // Append rxcpp operations
         return o.filter(
-            [=](types::Event e) {
-                return (!RE2::PartialMatch(e.get("/" + field)->GetString(), *regex_ptr));
+            [=](types::Event e)
+            {
+                auto field_str = e.get("/" + field)->GetString();
+                if (field_str)
+                {
+                    return (!RE2::PartialMatch(field_str, *regex_ptr));
+                }
+                return false;
             });
     };
 }

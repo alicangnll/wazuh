@@ -35,11 +35,11 @@ types::Lifter opBuilderHelperRegexExtract(const types::DocumentValue & def)
         return o.map(
             [=](types::Event e)
             {
-                auto field_str = e.get("/" + base_field)->GetString();
+                auto field_str = e.get("/" + base_field);
                 if (field_str)
                 {
                     std::string match;
-                    if (RE2::PartialMatch(field_str, *regex_ptr, &match))
+                    if (RE2::PartialMatch(field_str->GetString(), *regex_ptr, &match))
                     {
                         auto aux_string = "{ \"" + map_field + "\": \"" + match + "\"}";
                         types::Document doc{aux_string.c_str()};

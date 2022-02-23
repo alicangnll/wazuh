@@ -75,6 +75,80 @@ types::Lifter opBuilderHelperNotExists(const types::DocumentValue & def)
     };
 }
 
+bool opBuilderHelperIntComparison(const std::string field, char op, types::Event & e,
+                                  std::optional<std::string> refValue,
+                                  std::optional<int> value)
+{
+
+    // TODO Remove try catch or if nullptr after fix get method of document class
+    // Get value to compare
+    const rapidjson::Value * fieldValue{};
+    try
+    {
+        fieldValue = e.get("/" + field);
+    }
+    catch (std::exception & e)
+    {
+        // TODO Check exception type
+        return false;
+    }
+
+    if (fieldValue == nullptr || !fieldValue->IsInt())
+    {
+        return false;
+    }
+
+    // get str to compare
+    if (refValue.has_value())
+    {
+        // Get reference to json event
+        // TODO Remove try catch or if nullptr after fix get method of document class
+        const rapidjson::Value * refValueToCheck{};
+        try
+        {
+            refValueToCheck = e.get("/" + refValue.value());
+        }
+        catch (std::exception & ex)
+        {
+            // TODO Check exception type
+            return false;
+        }
+
+        if (refValueToCheck == nullptr || !refValueToCheck->IsInt())
+        {
+            return false;
+        }
+        value = refValueToCheck->GetInt();
+    }
+
+    // Int operation
+    switch (op)
+    {
+        // case '==':
+        case '=':
+            return fieldValue->GetInt() == value.value();
+        // case '!=':
+        case '!':
+            return fieldValue->GetInt() != value.value();
+        case '>':
+            return fieldValue->GetInt() > value.value();
+        // case '>=':
+        case 'g':
+            return fieldValue->GetInt() >= value.value();
+        case '<':
+            return fieldValue->GetInt() < value.value();
+        // case '<=':
+        case 'l':
+            return fieldValue->GetInt() <= value.value();
+
+        default:
+            // if raise here, then the source code is wrong
+            throw std::invalid_argument("Invalid operator: '" + std::string{op} + "' ");
+    }
+
+    return false;
+}
+
 types::Lifter opBuilderHelperIntEqual(const types::DocumentValue & def)
 {
     // Get field
@@ -108,25 +182,7 @@ types::Lifter opBuilderHelperIntEqual(const types::DocumentValue & def)
         return o.filter(
             [=](types::Event e)
             {
-                if (e.exists("/" + field))
-                {
-                    auto fieldToCheck = e.getObject().FindMember(field.c_str());
-                    if (fieldToCheck->value.IsInt())
-                    {
-                        if (value.has_value())
-                        {
-                            return fieldToCheck->value.GetInt() == value.value();
-                        }
-                        auto refValueToCheck =
-                            e.getObject().FindMember(refValue.value().c_str());
-                        if (refValueToCheck->value.IsInt())
-                        {
-                            return fieldToCheck->value.GetInt() ==
-                                   refValueToCheck->value.GetInt();
-                        }
-                    }
-                }
-                return false;
+                return opBuilderHelperIntComparison(field, '=', e, refValue, value);
             });
     };
 }
@@ -164,25 +220,8 @@ types::Lifter opBuilderHelperIntNotEqual(const types::DocumentValue & def)
         return o.filter(
             [=](types::Event e)
             {
-                if (e.exists("/" + field))
-                {
-                    auto fieldToCheck = e.getObject().FindMember(field.c_str());
-                    if (fieldToCheck->value.IsInt())
-                    {
-                        if (value.has_value())
-                        {
-                            return fieldToCheck->value.GetInt() != value.value();
-                        }
-                        auto refValueToCheck =
-                            e.getObject().FindMember(refValue.value().c_str());
-                        if (refValueToCheck->value.IsInt())
-                        {
-                            return fieldToCheck->value.GetInt() !=
-                                   refValueToCheck->value.GetInt();
-                        }
-                    }
-                }
-                return false;
+                // try and catche, return false
+                return opBuilderHelperIntComparison(field, '!', e, refValue, value);
             });
     };
 }

@@ -347,7 +347,7 @@ def check_agentd_started(response, agents_list):
         List of expected agents to be restarted.
     """
     timestamp_regex = re.compile(r'^\d\d\d\d/\d\d/\d\d\s\d\d:\d\d:\d\d')
-    agentd_started_regex = re.compile(r'agentd.+Started')
+    agentd_started_regex = re.compile(r'wazuh-agentd: INFO: Started')
 
     def get_timestamp(log):
         """Get timestamp from log.

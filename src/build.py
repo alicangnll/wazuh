@@ -66,6 +66,8 @@ class CommandLineParser:
         parser.add_argument(
             "--asan", help=f'Run ASAN on the code. Example: python3 build.py --asan <{module_list_str}>')
         parser.add_argument(
+            "--wintesttool", help=f'Run Test tool for Windows on the code. Example: python3 build.py --wintesttool <{module_list_str}>')
+        parser.add_argument(
             "--scheck", help=f'Run AStyle on the code for checking purposes. Example: python3 build.py --scheck <{module_list_str}>')
         parser.add_argument(
             "--sformat", help=f'Run AStyle on the code formatting the needed files. Example: python3 build.py --sformat <{module_list_str}>')
@@ -89,6 +91,8 @@ class CommandLineParser:
             utils.runCppCheck(args.cppcheck)
         elif self._argIsValid(args.asan):
             utils.runASAN(args.asan)
+        elif self._argIsValid(args.wintesttool):
+            utils.runTestToolForWindows(args.wintesttool)
         elif self._argIsValid(args.scheck):
             utils.runAStyleCheck(args.scheck)
         elif self._argIsValid(args.sformat):

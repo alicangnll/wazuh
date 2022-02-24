@@ -712,6 +712,9 @@ def runReadyToReview(moduleName, clean=False):
     runAStyleCheck(str(moduleName))
     if str(moduleName) != 'shared_modules/utils':
         runASAN(moduleName)
+        if str(moduleName) == 'syscheckd':
+            runTestToolForWindows(moduleName)
+            cleanFolder(str(moduleName), "build")
 
     printGreen(f'<{moduleName}>[RTR: PASSED]<{moduleName}>')
     if clean:

@@ -39,6 +39,7 @@ types::Lifter opBuilderHelperRegexExtract(const types::DocumentValue & def)
         return o.map(
             [=](types::Event e)
             {
+                // TODO Remove try catch
                 const rapidjson::Value * field_str{};
                 try
                 {

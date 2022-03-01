@@ -150,6 +150,7 @@ bool opBuilderHelperIntComparison(const std::string field, char op, types::Event
     return false;
 }
 
+// field: +i_eq/int|$ref/
 types::Lifter opBuilderHelperIntEqual(const types::DocumentValue & def)
 {
 
@@ -169,6 +170,7 @@ types::Lifter opBuilderHelperIntEqual(const types::DocumentValue & def)
     };
 }
 
+// field: +i_ne/int|$ref/
 types::Lifter opBuilderHelperIntNotEqual(const types::DocumentValue & def)
 {
 
@@ -191,6 +193,7 @@ types::Lifter opBuilderHelperIntNotEqual(const types::DocumentValue & def)
     };
 }
 
+// field: +i_lt/int|$ref/
 types::Lifter opBuilderHelperIntLessThan(const types::DocumentValue & def)
 {
 
@@ -213,6 +216,7 @@ types::Lifter opBuilderHelperIntLessThan(const types::DocumentValue & def)
     };
 }
 
+// field: +i_le/int|$ref/
 types::Lifter opBuilderHelperIntLessThanEqual(const types::DocumentValue & def)
 {
 
@@ -235,6 +239,7 @@ types::Lifter opBuilderHelperIntLessThanEqual(const types::DocumentValue & def)
     };
 }
 
+// field: +i_gt/int|$ref/
 types::Lifter opBuilderHelperIntGreaterThan(const types::DocumentValue & def)
 {
 
@@ -257,6 +262,7 @@ types::Lifter opBuilderHelperIntGreaterThan(const types::DocumentValue & def)
     };
 }
 
+// field: +i_ge/int|$ref/
 types::Lifter opBuilderHelperIntGreaterThanEqual(const types::DocumentValue & def)
 {
 

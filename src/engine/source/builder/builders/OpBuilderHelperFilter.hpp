@@ -34,6 +34,10 @@ types::Lifter opBuilderHelperExists(const types::DocumentValue & def);
  */
 types::Lifter opBuilderHelperNotExists(const types::DocumentValue & def);
 
+//*************************************************
+//*           Integer filters                      *
+//*************************************************
+
 /**
  * @brief Compares a integer of the event against another integer that may or may not
  * belong to the event `e`
@@ -63,8 +67,11 @@ inline bool opBuilderHelperIntComparison(const std::string field, char op,
  * @brief Builds helper integer equal operation.
  * Checks that the field is equal to an integer or another numeric field
  *
+ * The filter checks if a field in the JSON event `wazuh` is equal to a value.
+ * Only pass events if the fields are equal and the values are a integer.
  * @param def Definition of the operation to be built
- * @return types::Lifter
+ * @return types::Lifter The lifter with the `i_eq` filter.
+ * @throw std::runtime_error if the parameter is not a integer.
  */
 types::Lifter opBuilderHelperIntEqual(const types::DocumentValue & def);
 
@@ -72,8 +79,11 @@ types::Lifter opBuilderHelperIntEqual(const types::DocumentValue & def);
  * @brief Builds helper integer not equal operation.
  * Checks that the field is not equal to an integer or another numeric field
  *
+ * The filter checks if a field in the JSON event `wazuh` is not equal to a value.
+ * Only pass events if the fields are not equal and the values are a integer.
  * @param def Definition of the operation to be built
- * @return types::Lifter
+ * @return types::Lifter The lifter with the `i_ne` filter.
+ * @throw std::runtime_error if the parameter is not a integer.
  */
 types::Lifter opBuilderHelperIntNotEqual(const types::DocumentValue & def);
 
@@ -81,8 +91,11 @@ types::Lifter opBuilderHelperIntNotEqual(const types::DocumentValue & def);
  * @brief Builds helper integer less than operation.
  * Checks that the field is less than to an integer or another numeric field
  *
+ * The filter checks if a field in the JSON event `wazuh` is less than a value.
+ * Only pass events if the fields are less than and the values are a integer.
  * @param def Definition of the operation to be built
- * @return types::Lifter
+ * @return types::Lifter The lifter with the `i_lt` filter.
+ * @throw std::runtime_error if the parameter is not a integer.
  */
 types::Lifter opBuilderHelperIntLessThan(const types::DocumentValue & def);
 
@@ -90,8 +103,11 @@ types::Lifter opBuilderHelperIntLessThan(const types::DocumentValue & def);
  * @brief Builds helper integer less than equal operation.
  * Checks that the field is less than equal to an integer or another numeric field
  *
+ * The filter checks if a field in the JSON event `wazuh` is less than equal a value.
+ * Only pass events if the fields are less than equal and the values are a integer.
  * @param def Definition of the operation to be built
- * @return types::Lifter
+ * @return types::Lifter The lifter with the `i_le` filter.
+ * @throw std::runtime_error if the parameter is not a integer.
  */
 types::Lifter opBuilderHelperIntLessThanEqual(const types::DocumentValue & def);
 
@@ -99,17 +115,24 @@ types::Lifter opBuilderHelperIntLessThanEqual(const types::DocumentValue & def);
  * @brief Builds helper integer greater than operation.
  * Checks that the field is greater than to an integer or another numeric field
  *
+ * The filter checks if a field in the JSON event `wazuh` is greater than a value.
+ * Only pass events if the fields are greater than and the values are a integer.
  * @param def Definition of the operation to be built
- * @return types::Lifter
+ * @return types::Lifter The lifter with the `i_gt` filter.
+ * @throw std::runtime_error if the parameter is not a integer.
  */
+
 types::Lifter opBuilderHelperIntGreaterThan(const types::DocumentValue & def);
 
 /**
  * @brief Builds helper integer greater than equal operation.
  * Checks that the field is greater than equal to an integer or another numeric field
  *
+ * The filter checks if a field in the JSON event `wazuh` is greater than equal a value.
+ * Only pass events if the fields are greater than equal and the values are a integer.
  * @param def Definition of the operation to be built
- * @return types::Lifter
+ * @return types::Lifter The lifter with the `i_ge` filter.
+ * @throw std::runtime_error if the parameter is not a integer.
  */
 types::Lifter opBuilderHelperIntGreaterThanEqual(const types::DocumentValue & def);
 

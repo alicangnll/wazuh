@@ -110,7 +110,6 @@ int initialize_syscheck_configuration(syscheck_config *syscheck) {
     syscheck->max_fd_win_rt                   = 0;
     syscheck->registry_nodiff                 = NULL;
     syscheck->registry_nodiff_regex           = NULL;
-    syscheck->enable_registry_synchronization = 1;
 #endif
     syscheck->prefilter_cmd                   = NULL;
     syscheck->sync_interval                   = 300;

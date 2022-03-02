@@ -373,7 +373,6 @@ typedef struct _config {
     unsigned int restart_audit:1;                      /* Allow Syscheck restart Auditd */
     unsigned int enable_whodata:1;                     /* At least one directory configured with whodata */
     unsigned int enable_synchronization:1;             /* Enable database synchronization */
-    unsigned int enable_registry_synchronization:1;    /* Enable registry database synchronization */
     unsigned int realtime_change:1;                    /* Variable to activate the change to realtime from a whodata monitoring*/
 
     OSList *directories;                               /* List of directories to be monitored */

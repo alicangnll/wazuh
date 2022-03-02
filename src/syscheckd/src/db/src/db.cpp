@@ -117,10 +117,10 @@ int DB::countEntries(const std::string& tableName, const COUNT_SELECT_TYPE selec
     return count;
 }
 
+#include <iostream>
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 void fim_db_init(int storage,
                  int sync_interval,
                  fim_sync_callback_t sync_callback,
@@ -137,7 +137,13 @@ void fim_db_init(int storage,
             {
                 if (sync_callback)
                 {
-                    sync_callback(FIM_COMPONENT_FILE, msg.c_str());
+                    auto json = nlohmann::json::parse(msg);
+                    if (json.at("type") == "state")
+                    {
+                        json["data"]["attributes"]["type"] = "file";
+                    }
+                    sync_callback(FIM_COMPONENT_FILE, json.dump().c_str());
+                    std::cout << json.dump(4) << std::endl;
                 }
             }
         };

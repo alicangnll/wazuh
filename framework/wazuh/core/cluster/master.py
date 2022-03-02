@@ -679,7 +679,7 @@ class MasterHandler(server.AbstractServerHandler, c_common.WazuhCommon):
                                            data_retriever=WazuhDBConnection().run_wdb_command,
                                            get_data_command='global sync-agent-groups-get ',
                                            get_payload={"condition": "all", "set_synced": False,
-                                                        "get_global_hash": True})
+                                                        "get_global_hash": True, "last_id": 0}, pivot_key='last_id')
         local_agent_groups_information = await sync_object.retrieve_information()
 
         sync_object = c_common.SyncWazuhdb(manager=self, logger=logger, cmd=b'syn_g_m_w',
@@ -1107,7 +1107,7 @@ class Master(server.AbstractServer):
             Updated data on agent-groups.
         """
         result = {}
-        if client not in self.agent_groups_control_workers:
+        if client in self.clients.keys() and client not in self.agent_groups_control_workers:
             result = self.agent_groups_control
             self.agent_groups_control_workers.add(client)
 
